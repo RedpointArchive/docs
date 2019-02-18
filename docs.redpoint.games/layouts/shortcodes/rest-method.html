@@ -1,0 +1,425 @@
+<div class="table-of-contents">
+<div>Contents</div>
+<ul class="toc-h1"><ul class="toc-h2">
+    {{ if .Page.Params.json.description }}
+        {{ if gt (len .Page.Params.json.description) 0 }}    
+            <li><a href="#outline">Outline</a></li>
+        {{ end }}
+    {{ end }}
+    <li>
+        <a href="#request">Request</a>
+        <ul class="toc-h3">
+            <li><a href="#http-request">HTTP request</a></li>
+            <li><a href="#access-policies">Access policies</a></li>
+            <li><a href="#authorization">Authorization</a></li>
+            <li><a href="#parameters">Parameters</a></li>
+            <li><a href="#request-body">Request body</a></li>
+        </ul>
+    </li>
+    <li><a href="#response">Response</a></li>
+    <li>
+        <a href="#code-snippets">Code Snippets</a>
+        <ul class="toc-h3">
+            <li><a href="#cs-curl-tab" role="toc-code-snippet">Command Line</a></li>
+            <li><a href="#cs-unity-20-pr-tab" role="toc-code-snippet">Unity &amp; C# Promises</a></li>
+            <li><a href="#cs-unity-46-tab" role="toc-code-snippet">Unity &amp; C# Async</a></li>
+            <li><a href="#cs-ue4-tab" role="toc-code-snippet">Unreal Engine 4</a></li>
+        </ul>
+    </li>
+    <li><a href="#try-it">Try this API</a></li>
+</ul></ul>
+</div>
+<p>
+    {{ .Page.Params.json.summary }}
+</p>
+{{ if .Page.Params.json.description }}
+    {{ if gt (len .Page.Params.json.description) 0 }}
+        <a class="anchor" id="outline"></a><h2>Outline</h2>
+        {{ markdownify .Page.Params.json.description }}
+    {{ end }}
+{{ end }}
+<a class="anchor" id="request"></a><h2>Request</h2>
+<a class="anchor" id="http-request"></a><h3>HTTP request</h3>
+<p>
+    <code class="d-block" style="overflow-x: scroll; white-space: nowrap;">
+        {{- upper .Page.Params.apiMethod }} https://
+        {{- .Page.Params.apiName -}}
+        -api.hivemp.com
+        {{- .Page.Params.apiBasePath -}}
+        {{- .Page.Params.apiPath -}}
+        {{- $.Scratch.Set "FirstNonBodyParam" true -}}
+        {{- if .Page.Params.json.parameters -}}
+            {{- range .Page.Params.json.parameters -}}
+                {{- if eq .in "query" -}}
+                    {{- if $.Scratch.Get "FirstNonBodyParam" -}}
+                        ?
+                        {{- $.Scratch.Set "FirstNonBodyParam" false -}}
+                    {{- else -}}
+                        &amp;
+                    {{- end -}}
+                    {{- .name -}}
+                    =<em><strong style="color: black;">{{- .name -}}</strong></em>
+                {{- end -}}
+            {{- end -}}
+        {{- end -}}
+    </code>
+</p>
+{{ if .Page.Params.json.parameters }}
+    {{ if gt (len .Page.Params.json.parameters) 0 }}
+        <p>You must replace the emphasized parameter values when making the request. Refer to the parameters section below.</p>
+    {{ end }}
+{{ end }}
+<a class="anchor" id="access-policies"></a><h3>Access policies</h3>
+{{ $ApiKeyTypes := index .Page.Params.json "x-accepted-api-key-types" }}
+{{ if eq (len $ApiKeyTypes) 0 }}
+    <p>
+        This method is a public method, rate limited by IP address.
+    </p>
+{{ else }}
+    <p>
+        This method can only be called with certain kinds of API keys.  The API key types
+        that are permitted to call this API are:
+    </p>
+    <ul>
+        {{ $page := .Page }}
+        {{ $site := .Site }}
+        {{ range $ApiKeyTypes }}
+            {{ if eq . "session" }}
+                <li><strong>session:</strong> Obtained by creating a user session with <a href="{{ ref $page $site.Data.products.sessions.pages.product }}">{{ $site.Data.products.sessions.title }}</a>.</li>
+            {{ else if eq . "admin" }}
+                <li><strong>admin:</strong> Obtained by creating an administrative session with <a href="{{ ref $page $site.Data.products.sessions.pages.product }}">{{ $site.Data.products.sessions.title }}</a>.</li>
+            {{ else if eq . "public" }}
+                <li><strong>public:</strong> Obtained by creating a public API key with <a href="{{ ref $page (index $site.Data.products "api-key").pages.product }}">{{ (index $site.Data.products "api-key").title }}</a>.</li>
+            {{ else if eq . "server" }}
+                <li><strong>server:</strong> Provided to game servers through an environment variable when they are launched on HiveMP.</li>
+            {{ else if eq . "service" }}
+                <li><strong>service:</strong> Obtained by explicitly creating a service API key via the web console or <a href="/docs/api-key">API Key Management API</a>.</li>
+            {{ else }}
+                <li><strong>{{ . }}</strong></li>
+            {{ end }}
+        {{ end }}
+    </ul>
+    <p>
+        Additional restrictions may apply to some of the API key types listed above; refer
+        to the method description for any additional restrictions.
+    </p>
+{{ end }}
+<a class="anchor" id="authorization"></a><h3>Authorization</h3>
+<p>
+    All HiveMP REST APIs require the presence of an <code>X-API-Key</code> header with an
+    appropriate value, depending on the access policies outlined above.
+</p>
+{{ if eq (len $ApiKeyTypes) 0 }}
+<p>
+    This method explicitly requires anonymous access, which means that the header value should
+    be sent with no value, like so:
+</p>
+<p>
+    <code>X-API-Key;</code>
+</p>
+{{ else }}
+<p>
+    This method requires a valid API key to be passed on request, as demonstrated in the following
+    example:
+</p>
+<p>
+    <code>X-API-Key: <em><strong style="color: black;">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</strong></em></code>
+</p>
+{{ end }}
+<a class="anchor" id="parameters"></a><h3>Parameters</h3>
+{{ if .Page.Params.json.parameters }}
+    {{ if eq (len .Page.Params.json.parameters) 0 }}
+        <p>This method does not accept any parameters.</p>
+    {{ else }}
+        <table class="table table-parameters table-responsive">
+            {{ range .Page.Params.json.parameters }}
+                <tr>
+                    <td rowspan="4" class="code"><code style="display: block;">{{ .name }}</code></td>
+                    <th>Description</th>
+                    <td>{{ .description }}</td>
+                </tr>
+                <tr>
+                    <th>Type</th>
+                    {{ if .type }}
+                        <td>{{ .type }}</td>
+                    {{ else if .schema }}
+                        {{ if .schema.type }}
+                            <td>{{ .schema.type }}</td>
+                        {{ else if (index .schema "$ref") }}
+                            {{ $RefName := index .schema "$ref" }}
+                            {{ $RefNameSplit := split $RefName "/" }}
+                            {{ $RefLast := last 1 $RefNameSplit }}
+                            <td><a href="{{ .Page.Site.BaseUrl }}/{{ printf "docs/%s/rest%s/type_%s/" $.Page.Params.apiName $.Page.Params.apiBasePath (lower (index $RefLast 0)) }}">{{ index $RefLast 0 }}</a></td>
+                        {{ else }}
+                            <td>Not Specified</td>
+                        {{ end }}
+                    {{ else }}
+                        <td>Not Specified</td>
+                    {{ end }}
+                </tr>
+                <tr>
+                    <th>Specified In</th>
+                    <td>
+                        {{ .in }}
+                        {{ if eq .in "body" }}
+                            <br /><br />
+                            <div class="alert callout-warning" role="alert"><i class="fa fa-exclamation-triangle"></i> This method accepts a parameter in the body of the request.</div>
+                        {{ end }}
+                    </td>
+                </tr>
+                <tr style="margin-bottom: 10px;">
+                    <th>Required?</th>
+                    <td>
+                        {{ if .required }}
+                            <strong>Yes</strong>
+                        {{ else }}
+                            <span>No</span>
+                        {{ end }}
+                    </td>
+                </tr>
+            {{ end }}
+        </table>
+    {{ end }}
+{{ else }}
+    <p>This method does not accept any parameters.</p>
+{{ end }}
+<a class="anchor" id="request-body"></a><h3>Request body</h3>
+{{ if .Page.Params.json.parameters }}
+    {{ if eq (len .Page.Params.json.parameters) 0 }}
+        <p>The request body must be empty.</p>
+    {{ else }}
+        {{ $.Scratch.Set "HasBodyParam" false }}
+        {{ range .Page.Params.json.parameters }}
+            {{ if eq .in "body" }}
+                <p>You must pass the value of <code>{{ .name }}</code> as the request body.</p>
+                {{ $.Scratch.Set "HasBodyParam" true }}
+            {{ end }}
+        {{ end }}
+        {{ if not ($.Scratch.Get "HasBodyParam") }}
+            <p>The request body must be empty.</p>
+        {{ end }}
+    {{ end }}
+{{ else }}
+    <p>The request body must be empty.</p>
+{{ end }}
+<a class="anchor" id="response"></a><h2>Response</h2>
+{{ if .Page.Params.json.responses }}
+    {{ if eq (len .Page.Params.json.responses) 0 }}
+        {{ $.Scratch.Set "HasResponses" false }}
+        <p>This method does not define any responses.</p>
+    {{ else }}
+        {{ $.Scratch.Set "HasResponses" true }}
+        <p>This method will return one of the following responses:</p>
+        <table class="table table-parameters table-responsive">
+            {{ range $code, $response := (index .Page.Params.json "responses") }}
+                <tr>
+                    <td rowspan="2" class="code">
+                        <code style="display: block;">
+                            {{- if eq $code "default" -}}
+                                ...
+                            {{- else -}}
+                                {{ $code }}
+                            {{- end -}}
+                        </code>
+                    </td>
+                    <th>Description</th>
+                    <td>{{ $response.description }}</td>
+                </tr>
+                <tr style="margin-bottom: 10px;">
+                    <th>Type</th>
+                    {{ if $response.schema }}
+                        {{ if $response.schema.type }}
+                            {{ if eq $response.schema.type "array" }}
+                                {{ if (index $response.schema.items "$ref") }}
+                                    {{ $RefName := (index $response.schema.items "$ref") }}
+                                    {{ $RefNameSplit := split $RefName "/" }}
+                                    {{ $RefLast := last 1 $RefNameSplit }}
+                                    <td>array of <a href="{{ .Page.Site.BaseUrl }}/{{ printf "docs/%s/rest%s/type_%s/" $.Page.Params.apiName $.Page.Params.apiBasePath (lower (index $RefLast 0)) }}">{{ index $RefLast 0 }}</a></td>
+                                {{ else if $response.schema.items.type }}
+                                    <td>array of {{ $response.schema.items.type }}</td>
+                                {{ else }}
+                                    <td>array</td>
+                                {{ end }}
+                            {{ else }}
+                                <td>{{ $response.schema.type }}</td>
+                            {{ end }}
+                        {{ else if (index $response.schema "$ref") }}
+                            {{ $RefName := index $response.schema "$ref" }}
+                            {{ $RefNameSplit := split $RefName "/" }}
+                            {{ $RefLast := last 1 $RefNameSplit }}
+                            <td><a href="{{ .Page.Site.BaseUrl }}/{{ printf "docs/%s/rest%s/type_%s/" $.Page.Params.apiName $.Page.Params.apiBasePath (lower (index $RefLast 0)) }}">{{ index $RefLast 0 }}</a></td>
+                        {{ else }}
+                            <td>Not Specified</td>
+                        {{ end }}
+                    {{ else }}
+                        <td>Not Specified</td>
+                    {{ end }}
+                </tr>
+            {{ end }}
+        </table>
+    {{ end }}
+{{ else }}
+<p>This method does not define any responses.</p>
+{{ $.Scratch.Set "HasResponses" false }}
+{{ end }}
+<a class="anchor" id="code-snippets"></a><h2>Code Snippets</h2>
+
+<!-- C# synchronous example for Unity 2.0 Subset and .NET 3.5 -->
+{{- define "csharp-sync" -}}
+{{- partial "csharp-sync" . -}}
+{{- end -}}
+<!-- C# promise example for Unity 2.0 subset -->
+{{- define "csharp-promise" -}}
+{{- partial "csharp-promise" . -}}
+{{- end -}}
+<!-- C# async example for Unity 4.6.1 and .NET 4.5+ -->
+{{- define "csharp-async" -}}
+{{- partial "csharp-async" . -}}
+{{- end -}}
+
+<div class="row">
+    <div class="col-12 col-lg-3">
+        <div class="nav flex-column nav-pills mb-2" id="cs-tab" role="tablist">
+            <a class="nav-link active" id="cs-curl-tab" data-toggle="pill" href="#cs-curl" role="tab" aria-controls="cs-curl" aria-expanded="true">Command Line</a>
+            <a class="nav-link" id="cs-unity-20-pr-tab" data-toggle="pill" href="#cs-unity-20-pr" role="tab" aria-controls="cs-unity-20-pr" aria-expanded="true">Unity &amp; C# Promises</a>
+            <a class="nav-link" id="cs-unity-46-tab" data-toggle="pill" href="#cs-unity-46" role="tab" aria-controls="cs-unity-46" aria-expanded="true">Unity &amp; C# Async</a>
+            <a class="nav-link" id="cs-ue4-tab" data-toggle="pill" href="#cs-ue4" role="tab" aria-controls="cs-ue4" aria-expanded="true">Unreal Engine 4</a>
+        </div>
+    </div>
+    <div class="col-12 col-lg-9">
+        <div class="tab-content" id="cs">
+            <div class="tab-pane show active" id="cs-curl" role="tabpanel" aria-labelledby="cs-curl-tab">
+                {{ partial "command-line" (dict "context" . "invocation" (dict "api" (printf "%s-api-%s" .Page.Params.apiOriginalName .Page.Params.apiVersion) "method" .Page.Params.apiMethod "path" .Page.Params.apiPath "arguments" (dict "a" "a"))) }}
+            </div>
+{{- $.Scratch.Set "OperationId" (index .Page.Params.json "operationid") -}}
+{{- if (($.Scratch.Get "OperationId") nil) -}}
+{{- if (gt (len ($.Scratch.Get "OperationId")) 0) -}}
+            <div class="tab-pane" id="cs-unity-20-pr" role="tabpanel" aria-labelledby="cs-unity-20-pr-tab">
+                {{- partial "csharp-promise" . -}}
+            </div>
+            <div class="tab-pane" id="cs-unity-46" role="tabpanel" aria-labelledby="cs-unity-46-tab">
+                {{- partial "csharp-async" . -}}
+            </div>
+            <div class="tab-pane" id="cs-ue4" role="tabpanel" aria-labelledby="cs-ue4-tab">
+                {{- partial "ue4-blueprint" . -}}
+            </div>
+{{- else -}}
+{{ errorf "WARNING: %s does not have a valid operationId" .Page.File.Path }}
+{{- end -}}
+{{- else -}}
+{{ errorf "WARNING: %s does not have a valid operationId" .Page.File.Path }}
+{{- end -}}
+        </div>
+    </div>
+</div>
+<a class="anchor" id="try-it"></a><h2>Try this API</h2>
+<div class="container">
+    <form id="rest-tryit" data-tryit="true">
+        {{ if eq (len $ApiKeyTypes) 0 }}
+        <div class="form-group row">
+            <label class="col-form-label col-12 col-lg-2" for="restapi_key">X-API-Key</label>
+            <div class="col-12 col-lg-4">
+                <input type="text" class="form-control" readonly="readonly" id="restapi_key" />
+            </div>
+            <div class="col-12 col-lg-6">
+                <p class="form-control-plaintext" style="height: auto;">This method requires an empty API key.</p>
+            </div>
+        </div>
+        {{ else }}
+        <div class="form-group row">
+            <label class="col-form-label col-12 col-lg-2" for="restapi_key">X-API-Key</label>
+            <div class="col-12 col-lg-4">
+                <input type="text" class="form-control" data-apikey="true" required="required" placeholder="(required)" id="restapi_key" />
+            </div>
+            <div class="col-12 col-lg-6">
+                <p class="form-control-plaintext" style="height: auto;">The API key to use for the request.</p>
+            </div>
+        </div>
+        {{ end }}
+
+        {{ if .Page.Params.json.parameters }}
+            {{ $.Scratch.Set "Fields" "" }}
+            {{ $.Scratch.Set "ReqFields" "" }}
+            {{ $.Scratch.Set "BodyField" "" }}
+
+            {{ range .Page.Params.json.parameters }}
+                {{ $.Scratch.Set "ShowTextArea" false }}
+                {{ $.Scratch.Set "FormType" "text" }}
+                {{ $.Scratch.Set "Required" "" }}
+
+                {{ if eq .type "integer" }}
+                    {{ $.Scratch.Set "FormType" "number" }}
+                {{ end }}
+
+                {{ if eq .in "query" }}
+                    {{ if eq ($.Scratch.Get "Fields") "" }}
+                        {{ $.Scratch.Set "Fields" .name }}
+                    {{ else }}
+                        {{ $.Scratch.Set "Fields" (print ($.Scratch.Get "Fields") "," .name) }}
+                    {{ end }}
+                {{ end }}
+                
+                {{ if .required }}
+                    {{ $.Scratch.Set "Required" "required=\"required\" placeholder=(required)" }}
+                    {{ if eq .in "query" }}
+                        {{ if eq ($.Scratch.Get "ReqFields") "" }}
+                            {{ $.Scratch.Set "ReqFields" .name }}
+                        {{ else }}
+                            {{ $.Scratch.Set "ReqFields" (print ($.Scratch.Get "ReqFields") "," .name) }}
+                        {{ end }}
+                    {{ end }}
+                {{ end }}
+
+                {{ if eq .in "body" }}
+                    {{ $.Scratch.Set "ShowTextArea" "true" }}
+                    {{ $.Scratch.Set "BodyField" .name }}
+                {{ end}}
+
+                <div class="form-group row">
+                    <label class="col-form-label col-12 col-lg-2" for="restfield_{{ .name }}">{{ .name }}</label>
+                    {{ if $.Scratch.Get "ShowTextArea" }}
+                        <div class="col-12 col-lg-10">
+                            <textarea data-remember="true" class="form-control" rows="8" {{ $.Scratch.Get "Required" }} id="restfield_{{ .name }}"></textarea>
+                            <p class="form-control-plaintext" style="height: auto;">{{ .description }}</p>
+                        </div>
+                    {{ else }}
+                        <div class="col-12 col-lg-4">
+                            <input type="{{ $.Scratch.Get "FormType" }}" data-remember="true" class="form-control" {{ $.Scratch.Get "Required" }} id="restfield_{{ .name }}" />
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <p class="form-control-plaintext" style="height: auto;">{{ .description }}</p>
+                        </div>
+                    {{ end }}
+                </div>
+            {{ end }}
+        {{ end }}
+        <div class="form-group row">
+            <div class="col-0 col-lg-2"></div>
+            <div class="col-12 col-lg-4">
+                <input id="restmethod" value="{{ upper .Page.Params.apiMethod }}" type="hidden" />
+                <input id="resturl" value="https://{{ .Page.Params.apiName }}-api.hivemp.com{{ .Page.Params.apiBasePath }}{{ .Page.Params.apiPath }}" type="hidden" />
+                <input id="restfields" value="{{ $.Scratch.Get "Fields" }}" type="hidden" />
+                <input id="restreqFields" value="{{ $.Scratch.Get "ReqFields" }}" type="hidden" />
+                <input id="restbodyField" value="{{ $.Scratch.Get "BodyField" }}" type="hidden" />
+                <button id="restsubmit" type="submit" class="btn btn-primary">Execute</button>
+            </div>
+        </div>
+    </form>
+    <div id="rest-tryit-result" class="row" style="display: none;">
+        <div class="col-0 col-lg-2">
+        </div>
+        <div class="col-12 col-lg-10">
+            <div class="row">
+                <div class="col-12 tryit-command">
+                    <p>Command-line equivalent:</p>
+                    <pre><code class="language-bash">curl ...</code></pre>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 1em;">
+                <div class="col-12 tryit-results">
+                    <p><i class="fa fa-spinner fa-spin"></i> Fetching result...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

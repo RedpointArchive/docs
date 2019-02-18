@@ -1,0 +1,100 @@
+<pre class="m-0"><code class="language-csharp">// At the top of your script.
+using HiveMP.Api;
+using {{ .Page.Params.csharpSdkName }}.Api;
+
+// Inside your MonoBehaviour. Callbacks automatically happen on the main thread
+// via Unity's coroutine infrastructure.
+var client = new {{ index .Page.Params.json.tags 0 }}Client("&lt;YOUR API KEY HERE&gt;");
+client.{{ upper (substr ($.Scratch.Get "OperationId") 0 1) }}{{ substr ($.Scratch.Get "OperationId") 1 }}Promise(new {{ upper (substr ($.Scratch.Get "OperationId") 0 1) }}{{ substr ($.Scratch.Get "OperationId") 1 }}Request
+    {
+        {{- if .Page.Params.json.parameters -}}
+            {{- range .Page.Params.json.parameters -}}
+                {{- $.Scratch.Set "ParamExample" "..." -}}
+                {{- if not (.required) -}}
+                    {{- $.Scratch.Set "ParamExample" "null" -}}
+                {{- else -}}
+                    {{- if .type -}}
+                        {{- if eq .type "string" -}}
+                            {{- $.Scratch.Set "ParamExample" "\"...\"" -}}
+                        {{- else if eq .type "integer" -}}
+                            {{- $.Scratch.Set "ParamExample" "0" -}}
+                        {{- else if eq .type "boolean" -}}
+                            {{- $.Scratch.Set "ParamExample" "false" -}}
+                        {{- end -}}
+                    {{- else if .schema -}}
+                        {{- if .schema.type -}}
+                            {{- if eq .schema.type "string" -}}
+                                {{- $.Scratch.Set "ParamExample" "\"...\"" -}}
+                            {{- else if eq .schema.type "integer" -}}
+                                {{- $.Scratch.Set "ParamExample" "0" -}}
+                            {{- else if eq .schema.type "boolean" -}}
+                                {{- $.Scratch.Set "ParamExample" "false" -}}
+                            {{- end -}}
+                        {{- else if (index .schema "$ref") -}}
+                            {{- $RefName := index .schema "$ref" -}}
+                            {{- $RefNameSplit := split $RefName "/" -}}
+                            {{- $RefLast := last 1 $RefNameSplit -}}
+                            {{- $.Scratch.Set "ParamExample" (print "new " (index $RefLast 0) "()") -}}
+                        {{- end -}}
+                    {{- end -}}
+                {{- end -}}
+                {{- $ParamName := (print (upper (substr .name 0 1)) (substr .name 1)) }}
+        {{ $ParamName }} = {{ $.Scratch.Get "ParamExample" }},
+            {{- end -}}
+        {{- end }}
+    },
+{{- if ($.Scratch.Get "HasResponses") }}
+    result =>
+    {
+{{- range $code, $response := (index .Page.Params.json "responses") -}}
+    {{- if eq $code "200" -}}
+        {{- if $response.schema -}}
+            {{- if $response.schema.type -}}
+                {{- if eq $response.schema.type "string" }}
+        // result is a string
+                {{- else if eq $response.schema.type "integer" }}
+        // result is an integer
+                {{- else if eq $response.schema.type "boolean" }}
+        // result is a boolean
+                {{- else if eq $response.schema.type "array" -}}
+                    {{- if (index $response.schema.items "$ref") -}}
+                        {{- $RefName := (index $response.schema.items "$ref") -}}
+                        {{- $RefNameSplit := split $RefName "/" -}}
+                        {{- $RefLast := last 1 $RefNameSplit }}
+        // result is an array of {{ index $RefLast 0 -}}s
+                    {{- else if $response.schema.items.type -}}
+                        {{- if eq $response.schema.items.type "string" }}
+        // result is an array of strings
+                        {{- else if eq $response.schema.items.type "integer" }}
+        // result is an array of integers
+                        {{- else if eq $response.schema.items.type "boolean" }}
+        // result is an array of booleans
+                        {{- end -}}
+                    {{- else }}
+        // result is an array
+                    {{- end -}}
+                {{- end -}}
+            {{- else if (index $response.schema "$ref") -}}
+                {{- $RefName := index $response.schema "$ref" -}}
+                {{- $RefNameSplit := split $RefName "/" -}}
+                {{- $RefLast := last 1 $RefNameSplit -}}
+                {{- if in "aeiouAEIOU" (substr (index $RefLast 0) 0 1) }}
+        // result is an {{ index $RefLast 0 -}}
+                {{- else }}
+        // result is a {{ index $RefLast 0 -}}
+                {{- end -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- end }}
+    },
+{{- end }}
+    ex =>
+    {
+        // HiveMP exception properties:
+        // - ex.HttpStatusCode: The HTTP status code of the response
+        // - ex.HiveErrorCode: The HiveMP error code
+        // - ex.HiveErrorMessage: The HiveMP error message
+        // - ex.HiveErrorFields: Arbitrary extra data associated with the error
+    });
+</code></pre>

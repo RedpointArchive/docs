@@ -1,0 +1,42 @@
+{{- $metadata := printf "%s-api-metadata" .Page.Params.apiOriginalName -}}
+{{- $metadataJson := index .Site.Data $metadata -}}
+<div class="table-of-contents">
+<div>Contents</div>
+<ul class="toc-h1"><ul class="toc-h2">
+    <li><a href="#available-versions">Available Versions</a></li>
+    <li>
+        <a href="#changelog">Changelog</a>
+        <ul class="toc-h3">
+            {{- range $metadataJson.allVersions -}}
+            <li><a href="#changelog-{{- . -}}">{{- . -}}</a></li>
+            {{- end -}}
+        </ul>
+    </li>
+</ul></ul>
+</div>
+<p>
+    All HiveMP APIs are versioned either as an initial release, or by a date on which the API schema changed. When you use HiveMP APIs in your game or application, the version you choose will remain compatible forever. However, if you want to use newer features, you'll need to upgrade to a newer version.
+</p>
+<p>
+    The available versions and the changes in each version are outlined below.
+</p>
+<h2 id="available-versions">Available Versions</h2>
+<ul>
+    {{- range $metadataJson.allVersions -}}
+    <li><a href="{{- . -}}">{{- . -}}</a></li>
+    {{- end -}}
+</ul>
+<h2 id="changelog">Changelog</h2>
+{{- range sort $metadataJson.allVersions -}}
+<h3 id="changelog-{{- . -}}">{{- . -}}</h3>
+{{- $version := index $metadataJson.versionNotes . -}}
+{{- if $version -}}
+<p>
+    {{- markdownify $version -}}
+</p>
+{{- else -}}
+<p>
+    There are no release notes for this version.
+</p>
+{{- end -}} 
+{{- end -}}

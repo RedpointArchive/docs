@@ -1,0 +1,9 @@
+<pre class="m-0"><code class="language-bash"># Copy the text below into a Blueprints window
+# inside the UE4 editor anywhere to create the node for
+# this API call.
+Begin Object Class=/Script/OnlineBlueprintSupport.K2Node_LatentOnlineCall Name="K2Node_LatentOnlineCall_0"
+   ProxyFactoryFunctionName="PerformHiveCall"
+   ProxyFactoryClass=Class'/Script/HiveMPSDK.{{ replace .Page.Params.apiName "-" "_" }}_{{ index .Page.Params.json.tags 0 }}_{{ index .Page.Params.json "operationId" }}'
+   ProxyClass=Class'/Script/HiveMPSDK.{{ replace .Page.Params.apiName "-" "_" }}_{{ index .Page.Params.json.tags 0 }}_{{ index .Page.Params.json "operationId" }}'
+End Object
+</code></pre>

@@ -1,0 +1,23 @@
+{{ $invocation := (index .Site.Data.invocations (.Get 0)) }}
+{{ if $invocation }}
+<div class="card mb-3">
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" href="#a" role="tab" data-toggle="tab">Command Line</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body tab-content p-0">
+    <div role="tabpanel" class="tab-pane in active p-4" id="a">
+      {{ partial "command-line" (dict "context" . "invocation" $invocation) }}
+    </div>
+  </div>
+</div>
+{{ if $invocation.response }}
+{{ if $invocation.responseJoiner }}
+{{ $invocation.responseJoiner }}
+{{ end }}
+<pre class="m-0 mb-3"><code class="language-json">{{- jsonify $invocation.response -}}</code></pre>
+{{ end }}
+{{ end }}

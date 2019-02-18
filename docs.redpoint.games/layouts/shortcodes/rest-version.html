@@ -1,0 +1,31 @@
+{{- $metadata := printf "%s-api-metadata" .Page.Params.apiOriginalName -}}
+{{- $metadataJson := index .Site.Data $metadata -}}
+{{- $version := index $metadataJson.versionNotes .Page.Params.apiVersion -}}
+<div class="table-of-contents">
+<div>Contents</div>
+<ul class="toc-h1"><ul class="toc-h2">
+    <li><a href="#endpoints">Endpoints</a></li>
+</ul></ul>
+</div>
+{{- if $version -}}
+<p>
+    {{- markdownify $version -}}
+</p>
+{{- else -}}
+<p>
+    There are no release notes for this version.
+</p>
+{{- end -}} 
+<h2 id="endpoints">Endpoints</h2>
+<p>
+    All HiveMP services offer a production endpoint and a development endpoint. The production endpoint
+    has an uptime SLA as outlined in your plan, while no uptime is guaranteed for the development endpoint.
+</p>
+<p>
+    The development endpoint may receive updates and new features earlier than the production endpoint. You
+    can use the development endpoint during your own testing to keep data separate to production.
+</p>
+
+{{- $Endpoint := printf "%s%s" .Page.Params.json.host .Page.Params.apiBasePath -}}
+<p><strong>Production Endpoint:</strong> <a href="https://{{ $Endpoint }}">https://{{ $Endpoint }}</a></p>
+<p><strong>Development Endpoint:</strong> <a href="https://dev-{{ $Endpoint }}">https://dev-{{ $Endpoint }}</a></p>

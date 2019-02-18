@@ -1,0 +1,22 @@
+{{ $context := .context }}
+{{ $product := .product }}
+{{ $productInfo := (index .context.Site.Data.products $product) }}
+<a class="product-button row btn btn-light" href="{{ ref $context $productInfo.pages.product }}">
+  <div class="desc">
+    <h3>
+      {{- $productInfo.title -}}
+      {{- if eq $productInfo.stage "GA" }} <span class="badge">&nbsp;</span>{{- end -}}
+      {{- if eq $productInfo.stage "Beta" }} <span class="badge badge-warning">Beta</span>{{- end -}}
+      {{- if eq $productInfo.stage "Alpha" }} <span class="badge badge-warning">Alpha</span>{{- end -}}
+      {{- if eq $productInfo.stage "Early Access" }} <span class="badge badge-warning">Early Access</span>{{- end -}}
+      {{- if eq $productInfo.stage "Coming Soon" }} <span class="badge badge-secondary">Coming Soon</span>{{- end -}}
+      {{- if eq $productInfo.stage "Not Available" }} <span class="badge badge-dark">N/A</span>{{- end -}}
+    </h3>
+    <div>
+      <span>{{- $productInfo.description.short -}}</span>
+    </div>
+  </div>
+  <div class="product-link">
+    <i class="fas fa-chevron-right"></i>
+  </div>
+</a>

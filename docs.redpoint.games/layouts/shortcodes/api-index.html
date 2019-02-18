@@ -1,0 +1,73 @@
+<hr />
+<div class="row row-overview-buttons">
+{{ if .Page.GetPage "./quickstart/_index.md" }}
+  <div class="col-12 col-sm-6 col-xl-4">
+    <a class="card-link" href="{{ ref . "./quickstart/_index.md" }}">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><div><i class="fas fa-clock"></i></div>Quickstart</h5>
+          <p class="card-text">Learn in 10 minutes</p>
+        </div>
+      </div>
+    </a>
+  </div>
+{{ end }}
+{{ if .Page.GetPage "./faq/_index.md" }}
+  <div class="col-12 col-sm-6 col-xl-4">
+    <a class="card-link" href="{{ ref . "./faq/_index.md" }}">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><div><i class="fas fa-file-alt"></i></div>FAQs</h5>
+          <p class="card-text">Get answers to frequently asked questions</p>
+        </div>
+      </div>
+    </a>
+  </div>
+{{ end }}
+{{ if .Page.GetPage "./how-to/_index.md" }}
+  <div class="col-12 col-sm-6 col-xl-4">
+    <a class="card-link" href="{{ ref . "./how-to/_index.md" }}">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><div><i class="fas fa-file-alt"></i></div>How-to Guides</h5>
+          <p class="card-text">Perform specific tasks</p>
+        </div>
+      </div>
+    </a>
+  </div>
+{{ end }}
+{{ if .Page.GetPage "./concepts/_index.md" }}
+  <div class="col-12 col-sm-6 col-xl-4">
+    <a class="card-link" href="{{ ref . "./concepts/_index.md" }}">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><div><i class="fas fa-building"></i></div>Concepts</h5>
+          <p class="card-text">Develop a deep understanding of {{ with (index .Site.Data.products (.Get 0)) -}}{{- .title -}}{{- end }}</p>
+        </div>
+      </div>
+    </a>
+  </div>
+{{ end }}
+{{ if .Page.GetPage "./samples/_index.md" }}
+  <div class="col-12 col-sm-6 col-xl-4">
+    <a class="card-link" href="{{ ref . "./samples/_index.md" }}">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><div><i class="fas fa-laptop-code"></i></div>Samples</h5>
+          <p class="card-text">Check out our sample applications</p>
+        </div>
+      </div>
+    </a>
+  </div>
+{{ end }}
+  <div class="col-12 col-sm-6 col-xl-4">
+    <a class="card-link" href="/contact-us/">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><div><i class="fas fa-question-circle"></i></div>Support</h5>
+          <p class="card-text">Get assistance with {{ with (index .Site.Data.products (.Get 0)) -}}{{- .title -}}{{- end }} issues</p>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>

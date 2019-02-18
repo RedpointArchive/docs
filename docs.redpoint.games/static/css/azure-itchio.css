@@ -1,0 +1,24 @@
+.ai {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+/* ==========================================
+Single-colored icons can be modified like so:
+.ai-name {
+  font-size: 32px;
+  color: red;
+}
+========================================== */
+
+.ai-azure {
+  width: 1.2529296875em;
+}
+
+.ai-itchio {
+  width: 1.12890625em;
+}

@@ -1,0 +1,11 @@
+{{- with .Site.GetPage (.Get 0) -}}
+{{- if in .Permalink "/how-to/" -}}
+**How-to Guide:** [{{- .Title -}}]({{ .RelPermalink}})
+{{- else if in .Permalink "/concepts/" -}}
+**Concept:** [{{- .Title -}}]({{ .RelPermalink}})
+{{- else -}}
+[{{- .Title -}}]({{ .RelPermalink}})
+{{- end -}}
+{{- else -}}
+{{- errorf "ERROR: page is nil %s" (.Get 0) -}}
+{{- end -}}

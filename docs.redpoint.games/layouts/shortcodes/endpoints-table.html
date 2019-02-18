@@ -1,0 +1,14 @@
+<table class="table">
+  <tr>
+    <th>API</th>
+    <th>OpenAPI Definition</th>
+  </tr>
+  {{- range $key, $product := .Site.Data.products -}}
+  {{- if $product.endpoint -}}
+  <tr>
+    <td>{{- $product.title -}}</td>
+    <td><code>{{- $product.endpoint -}}swagger.json</code></td>
+  </tr>
+  {{- end -}}
+  {{- end -}}
+</table>

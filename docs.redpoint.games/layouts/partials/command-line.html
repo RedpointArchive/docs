@@ -1,0 +1,66 @@
+{{- if .invocation -}}
+{{- $api := .invocation.api -}}
+{{- $method := .invocation.method -}}
+{{- $path := .invocation.path -}}
+{{- $apiJson := index .context.Site.Data $api -}}
+{{- $pathsJson := index $apiJson "paths" -}}
+{{- $pathJson := index $pathsJson $path -}}
+{{- $methodJson := index $pathJson $method -}}
+{{- if $methodJson -}}
+{{- $parameters := index $methodJson "parameters" -}}
+{{- $arguments := .invocation.arguments -}}
+{{- $scratch := .context.Scratch -}}
+<pre class="m-0"><code class="language-bash">{{- if $parameters -}}
+    {{- range $parameters -}}
+        {{- if eq .in "body" -}}read -r -d '' _request_body &lt;&lt; EOM
+{{ jsonify (index $arguments .name) }}
+EOM
+{{ end -}}
+    {{- end -}}
+{{- end -}}curl -s \
+&nbsp;&nbsp;-H &quot;X-API-Key: $apiKey&quot; \
+&nbsp;&nbsp;-H &quot;Accept: application/json&quot; \
+{{- $scratch.Set "HasNoBodyParam" true -}}
+{{- if $parameters -}}
+    {{- range $parameters -}}
+        {{- if eq .in "body" -}}
+            {{- $scratch.Set "HasNoBodyParam" false }}
+&nbsp;&nbsp;-H &quot;Content-Type: application/json&quot; \
+            {{- if ne (index $arguments .name) nil }}
+&nbsp;&nbsp;--data &quot;$_request_body&quot; \
+            {{- else }}
+&nbsp;&nbsp;--data &quot;...&quot; \
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+{{- if $scratch.Get "HasNoBodyParam" }}
+&nbsp;&nbsp;-H &quot;Content-Length: 0&quot; \
+{{- end }}
+&nbsp;&nbsp;-X {{ upper $method }} \
+&nbsp;&nbsp;&quot;https://
+{{- $apiJson.host -}}
+{{- $apiJson.basePath -}}
+{{- $path -}}
+{{- $scratch.Set "FirstNonBodyParam" true -}}
+{{- if $parameters -}}
+    {{- range $parameters -}}
+        {{- if eq .in "query" -}}{{- if or .required (ne (index $arguments .name) nil) }}&quot;\
+            {{- if $scratch.Get "FirstNonBodyParam" }}
+&quot;?
+                {{- $scratch.Set "FirstNonBodyParam" false -}}
+            {{- else }}
+&quot;&amp;
+            {{- end -}}
+            {{- .name -}}
+            ={{- if ne (index $arguments .name) nil -}}
+            {{ substr (querify "" (index $arguments .name)) 1 }}
+            {{- else -}}
+            ${{- .name -}}
+            {{- end -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}&quot;</code></pre>
+{{- end -}}
+{{- end -}}

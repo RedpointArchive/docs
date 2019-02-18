@@ -1,0 +1,5 @@
+steps:
+- name: "node:8.15.0-jessie"
+  args: ['/workspace/build.sh']
+  entrypoint: "bash"
+  env: []

@@ -1,0 +1,13 @@
+{{ "<!-- TODO DEPLOY BLOCKER -->" | safeHTML }}
+<div class="alert alert-warning" role="alert">
+    <div class="alert-title alert-heading"><i class="fa fa-truck"></i>&nbsp;&nbsp;We're still writing this section!</div>
+    <p class="mb-0">
+        This section hasn't been written yet.
+    </p>
+    {{ if (.Get 0) }}
+    <hr class="mt-2 mb-2" />
+    <p class="mb-0">
+        Associated note: <strong><em>{{ .Get 0 }}</em></strong>.
+    </p>
+    {{ end }}
+</div>

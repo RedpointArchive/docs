@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{{ .Description }}">
+    <meta name="author" content="Redpoint Games">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@RedpointGames" />
+    <meta name="twitter:title" content="HiveMP - {{ .Title }}" />
+    <meta name="twitter:description" content="{{ .Description }}" />
+    <meta name="twitter:image" content="https://hivemp.com/img/thumbnails/twitter_{{ md5 .RelPermalink }}.png" />
+    <meta property="og:url" content="https://hivemp.com{{ .Permalink }}" />
+    <meta property="og:title" content="HiveMP - {{ .Title }}" />
+    <meta property="og:description" content="{{ .Description }}" />
+    <meta property="og:image" content="https://hivemp.com/img/thumbnails/fb_{{ md5 .RelPermalink }}.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="theme-color" content="#ffffff">
+    <title>{{ .Title }} - Redpoint Games Support</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/prism.css">
+    <link rel="stylesheet" href="/css/hivemp.css?{{ now.Unix }}">
+    <link rel="stylesheet" href="/css/azure-itchio.css?{{ now.Unix }}">
+    <script defer src="/js/solid.min.js?{{ now.Unix }}"></script>
+    <script defer src="/js/regular.min.js?{{ now.Unix }}"></script>
+    <script defer src="/js/brands.min.js?{{ now.Unix }}"></script>
+    <script defer src="/js/fontawesome.min.js?{{ now.Unix }}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-26599501-26"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-26599501-26');
+    </script>
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/status-inline.js"></script>
+  </head>
+
+  <body class="bg-dark">
+    <div class="container-nav">
+      <nav class="navbar navbar-expand-md navbar-hive">
+        <div class="container-fluid container-hive">
+          <div class="row ml-0 mr-0" style="width: 100%; white-space: nowrap;">
+            <div class="col-6 pl-0 redpoint-brand">
+              <a href="/">
+                <img src="/img/RedpointMain.png" alt="Redpoint Games" />
+                <h1>Support</h1>
+              </a>
+            </div>
+            <div class="col-6 pr-0">
+              <a href="/contact-us/" class="float-right btn btn-danger">Contact Us</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container-fluid container-hive">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+              <li {{ if .IsHome }}class="nav-item active"{{ else }}class="nav-item"{{ end }}>
+                <a class="nav-link pl-0" href="/">Welcome <span class="sr-only">(current)</span></a>
+              </li>
+              {{ range .Site.Menus.main.ByWeight }}
+                <li {{ if eq (substr $.URL 0 (len .URL)) .URL }}class="nav-item active"{{ else }}class="nav-item"{{ end }}>
+                  <a class="nav-link" href="{{ .URL }}">{{ .Name }}</a>
+                </li>
+              {{ end }}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    {{ block "content" . }}
+    <div class="container-fluid body-content pl-0 pr-0">
+      {{ block "main" . }}
+      {{ end }}
+    </div>
+    {{ end }}
+
+    <div class="container-fluid footer-content bg-dark text-light pl-0 pr-0">
+      {{ partial "footer.html" . }}
+    </div>
+
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/stickyfill.min.js"></script>
+    {{ block "footer" . }}
+    <script src="/js/bootstrap-slider.min.js"></script>
+    <script>
+      $(function() {
+        var divs = $('span[class^="flipper-"]');
+        i = 0;
+        function cycle() { 
+          divs.eq(i).fadeOut(400, function() {
+            i = i+1;
+            divs.eq(i).fadeIn(400, function() {
+              if (i >= divs.length - 1) {
+                return;
+              }
+              window.setTimeout(cycle, 1000);
+            });
+          });
+        };
+        window.setTimeout(cycle, 1000);
+      });
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+      });
+    </script>
+    {{ end }}
+  </body>
+</html>

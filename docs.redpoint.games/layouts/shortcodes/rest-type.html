@@ -1,0 +1,52 @@
+{{- $api := printf "%s-api-%s" .Page.Params.apiOriginalName .Page.Params.apiVersion -}}
+{{- $type := .Page.Params.typeName -}}
+{{- $apiJson := index .Site.Data $api -}}
+{{- $definitionsJson := index $apiJson "definitions" -}}
+{{- $typeJson := index $definitionsJson $type -}}
+<div class="table-of-contents">
+    <div>Contents</div>
+<ul class="toc-h1"><ul class="toc-h2">
+    <li>
+        <a href="#properties">Properties</a>
+    </li>
+</ul></ul>
+</div>
+<p>
+    {{ $typeJson.description }}
+</p>
+<a class="anchor" id="properties"></a><h2>Properties</h2>
+<table class="table table-parameters table-responsive">
+    {{ range $key, $value := $typeJson.properties }}
+        <tr>
+            <td rowspan="2" class="code"><code style="display: block;">{{ $key }}</code></td>
+            <th>Description</th>
+            <td>{{ markdownify $value.description }}</td>
+        </tr>
+        <tr>
+            <th>Type</th>
+            {{ if $value.type }}
+                {{ if eq $value.type "array" }}
+                    {{ if (index $value.items "$ref") }}
+                        {{ $RefName := (index $value.items "$ref") }}
+                        {{ $RefNameSplit := split $RefName "/" }}
+                        {{ $RefLast := last 1 $RefNameSplit }}
+                        <td>array of <a href="{{ .Page.Site.BaseUrl }}/{{ printf "docs/%s/rest%s/type_%s/" $.Page.Params.apiName $.Page.Params.apiBasePath (lower (index $RefLast 0)) }}">{{ index $RefLast 0 }}</a></td>
+                    {{ else if $value.items.type }}
+                        <td>array of {{ $value.items.type }}</td>
+                    {{ else }}
+                        <td>array</td>
+                    {{ end }}
+                {{ else }}
+                    <td>{{ $value.type }}</td>
+                {{ end }}
+            {{ else if (index $value "$ref") }}
+                {{ $RefName := index $value "$ref" }}
+                {{ $RefNameSplit := split $RefName "/" }}
+                {{ $RefLast := last 1 $RefNameSplit }}
+                <td><a href="{{ .Page.Site.BaseUrl }}/{{ printf "docs/%s/rest%s/type_%s/" $.Page.Params.apiName $.Page.Params.apiBasePath (lower (index $RefLast 0)) }}">{{ index $RefLast 0 }}</a></td>
+            {{ else }}
+                <td>Not Specified</td>
+            {{ end }}
+        </tr>
+    {{ end }}
+</table>

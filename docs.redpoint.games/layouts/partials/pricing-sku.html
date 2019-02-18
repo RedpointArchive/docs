@@ -1,0 +1,125 @@
+{{- $context := .context -}}
+{{- $tag := .tag -}}
+{{- $soft := .soft -}}
+
+{{- $sc := newScratch -}}
+{{- $sc.Set "groups" slice -}}
+{{- range $key, $value := (index $context.Site.Data "pricing-skus") -}}
+{{- if (in $value.tags $tag) -}}
+{{- if not (in ($sc.Get "groups") (index $value "product-id")) -}}
+{{- $sc.Add "groups" (index $value "product-id") -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- if $soft -}}
+<table class="table table-new">
+  <tbody>
+{{- end -}}
+
+{{- range $gkey, $productId := $sc.Get "groups" -}}
+{{- $product := index $context.Site.Data.products $productId -}}
+{{- if not $product -}}
+{{- errorf "ERROR: Product ID '%s' does not exist (used in pricing SKUs)" $productId -}}
+{{- end -}}
+{{- $psc := newScratch -}}
+{{- $psc.Set "meteredSep" false -}}
+{{- range $key, $value := (index $context.Site.Data "pricing-skus") -}}
+{{- if (in $value.tags $tag) -}}
+{{- if eq $productId (index $value "product-id") -}}
+{{- if and $value.pricing.metered $value.pricing.unmetered -}}
+{{- $psc.Set "meteredSep" true -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- if not $soft -}}
+<table class="table table-new">
+  <thead class="thead-inverse">
+    <tr>
+      <th colspan="3" class="bg-primary">{{- $product.title -}}</th>
+    </tr>
+  </thead>
+  <tbody>
+{{- end -}}
+    <tr>
+{{- if not $soft -}}
+      <th class="col-4">Item</th>
+{{- else -}}
+{{ $pageForLink := $context.Site.GetPage $product.pages.product }}
+      <th class="col-4 bg-primary text-white"><a href="{{ $pageForLink.Permalink }}" class="text-white">{{- $product.title -}}</a></th>
+{{- end -}}
+      {{- if $psc.Get "meteredSep" -}}
+      <th class="col-4">Metered Pricing</th>
+      <th class="col-4">Unmetered Pricing</th>
+      {{- else -}}
+      <th class="col-8" colspan="2">Metered and Unmetered Pricing</th>
+      {{- end -}}
+    </tr>
+    {{- range $key, $value := (index $context.Site.Data "pricing-skus") -}}
+    {{- if (in $value.tags $tag) -}}
+    {{- if eq $productId (index $value "product-id") -}}
+    <tr>
+      <td class="border-right-1">
+        {{- $value.title -}}
+        {{- if $value.subtitle -}}
+        <br/><span class="small-notice">{{ replace $value.subtitle "%BRAND%" $product.title }}</span>
+        {{- end -}}
+      </td>
+      {{- if $psc.Get "meteredSep" -}}
+      {{- if and $value.pricing.metered $value.pricing.unmetered -}}
+      <td class="border-right-1">
+        {{- range $lkey, $line := $value.pricing.metered -}}
+        {{- if eq $line "TBA" -}}
+        <span class="badge badge-dark" data-toggle="tooltip" data-placement="bottom" title="You will not be charged for this item until pricing has been announced.">To be announced</span>
+        {{- else -}}
+        {{- $line -}}<br />
+        {{- end -}}
+        {{- end -}}
+      </td>
+      <td>
+        {{- range $lkey, $line := $value.pricing.unmetered -}}
+        {{- if eq $line "TBA" -}}
+        <span class="badge badge-dark" data-toggle="tooltip" data-placement="bottom" title="You will not be charged for this item until pricing has been announced.">To be announced</span>
+        {{- else -}}
+        {{- $line -}}<br />
+        {{- end -}}
+        {{- end -}}
+      </td>
+      {{- else -}}
+      <td colspan="2">
+        <span class="small-notice">For both metered and unmetered sessions:</span>
+        {{- range $lkey, $line := $value.pricing.all -}}
+        {{- if eq $line "TBA" -}}
+        <span class="badge badge-dark" data-toggle="tooltip" data-placement="bottom" title="You will not be charged for this item until pricing has been announced.">To be announced</span>
+        {{- else -}}
+        {{- $line -}}<br />
+        {{- end -}}
+        {{- end -}}
+      </td>
+      {{- end -}}
+      {{- else -}}
+      <td colspan="2">
+        {{- range $lkey, $line := $value.pricing.all -}}
+        {{- if eq $line "TBA" -}}
+        <span class="badge badge-dark" data-toggle="tooltip" data-placement="bottom" title="You will not be charged for this item until pricing has been announced.">To be announced</span>
+        {{- else -}}
+        {{- $line -}}<br />
+        {{- end -}}
+        {{- end -}}
+      </td>
+      {{- end -}}
+    </tr>
+    {{- end -}}
+    {{- end -}}
+    {{- end -}}
+{{- if not $soft -}}
+  </tbody>
+</table>
+{{- end -}}
+{{- end -}}
+
+{{- if $soft -}}
+  </tbody>
+</table>
+{{- end -}}

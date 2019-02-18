@@ -1,0 +1,7 @@
+{{- $url := relURL (printf "%s/%s" (replace .Page.Dir "\\" "/") (.Get 0)) -}}
+{{- $file := relURL (printf "static/%s/%s" (replace .Page.Dir "\\" "/") (.Get 0)) -}}
+{{- if (fileExists $file) -}}
+<img src="{{ $url }}" class="img-fluid" alt="{{ .Get 1 }}" />
+{{- else -}}
+{{- errorf "%s not found!" $file -}}
+{{- end -}}

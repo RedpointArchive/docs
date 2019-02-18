@@ -1,0 +1,198 @@
+{{- define "menu-iter" -}}
+{{- if .Target.HasChildren -}}
+  {{- $url := .URL -}}
+  {{- $sc := .Scratch -}}
+  {{- range .Target.Children.ByWeight -}}
+    {{- template "menu-iter" dict "Target" . "URL" $url "Scratch" $sc -}}
+  {{- end -}}
+{{- end -}}
+{{- if eq .URL .Target.URL -}}
+  {{- .Scratch.Set "Identifier" .Target.Identifier -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "menu-node" -}}
+{{- .Target.Pre -}}
+{{- .Scratch.Set "Identifier" "=====" -}}
+{{- template "menu-iter" dict "Target" .Target "URL" .Target.URL "Scratch" .Scratch -}}
+{{- $MyIdentifier := .Scratch.Get "Identifier" -}}
+{{- .Scratch.Set "IsExpanded" (eq .Target.URL .URL) -}}
+{{- if ge (len .CurrentIdentifier) (len $MyIdentifier) -}}
+  {{- if gt (len $MyIdentifier) 0 }}
+    {{- $CurrentIdentifierSubstr1 := (substr .CurrentIdentifier 0 (sub (len $MyIdentifier) 1)) -}}
+    {{- $CurrentIdentifierSubstr2 := (substr .CurrentIdentifier (sub (len $MyIdentifier) 1) 1) -}}
+    {{- $MyIdentifierSubstr := (substr $MyIdentifier 0 (sub (len $MyIdentifier) 1)) -}}
+    {{ if and (eq $CurrentIdentifierSubstr2 ":") (eq $CurrentIdentifierSubstr1 $MyIdentifierSubstr) }}
+      {{ .Scratch.Set "IsExpanded" true -}}
+    {{ end }}
+  {{- end -}}
+{{- end -}}
+{{- $IsExpanded := .Scratch.Get "IsExpanded" -}}
+<li {{ if eq .URL .Target.URL }}class="active"{{ end }}>
+{{ if .Target.HasChildren }}
+  {{ if eq .Target.Name "Documentation" }}
+    <a data-toggle="collapse" href="#nav-{{ md5 .Target.URL }}" aria-expanded="false" aria-controls="nav-{{ md5 .Target.URL }}"><span class="fa-li"><i class="fa {{ if $IsExpanded }}fa-angle-down{{ else }}fa-angle-right{{ end }}"></i></span><span>Home</span></a>
+  {{ else }}
+    <a data-toggle="collapse" href="#nav-{{ md5 .Target.URL }}" aria-expanded="false" aria-controls="nav-{{ md5 .Target.URL }}"><span class="fa-li"><i class="fa {{ if $IsExpanded }}fa-angle-down{{ else }}fa-angle-right{{ end }}"></i></span><span>{{ .Target.Name }}</span></a>
+  {{ end }}
+  <ul class="collapse{{ if $IsExpanded }} show{{ end }} fa-ul" id="nav-{{ md5 .Target.URL }}">
+    <li {{ if eq .URL .Target.URL }}class="active"{{ end }}>
+      <a href="{{.Target.URL}}" ><span class="fa-li"></span>Overview</a>
+    </li>
+    {{ $url := .URL }}
+    {{ $ci := .CurrentIdentifier }}
+    {{ $sc := .Scratch }}
+    {{ range .Target.Children.ByWeight }}
+      {{ template "menu-node" dict "Target" . "URL" $url "Scratch" $sc "CurrentIdentifier" $ci }}
+    {{ end }}
+  </ul>
+{{else}}
+  <a href="{{.Target.URL}}" ><span>{{ .Target.Name }}</span></a>
+{{end}}
+</li>
+{{ end }}
+{{ define "footer" }}
+<script type="text/javascript">
+  $('.sticky').Stickyfill();
+</script>
+<script src="/js/clipboard.min.js"></script>
+<script src="/js/prism.js"></script>
+<script src="/js/js.cookie.js"></script>
+<script type="text/javascript">
+  $('a.nav-link[role="tab"]').click(function(e) {
+    var preference = e.target.id;
+    Cookies.set("code-snippet-preference", preference);
+  });
+  $('a[role="toc-code-snippet"]').click(function(e) {
+    var preference = $(e.target).attr('href');
+    Cookies.set("code-snippet-preference", preference.substr(1, preference.length - 1));
+    $(preference).tab('show');
+    window.setTimeout(function() {
+      location.href = '#code-snippets';
+    }, 10);
+    e.preventDefault();
+  });
+  $(function() {
+    var preference = Cookies.get("code-snippet-preference");
+    if (preference != undefined) {
+      $('#' + preference).tab('show');
+    }
+  });
+  $(function() {
+    let scrollTimer = null;
+    function setScrollPos() {
+      Cookies.set("scroll-docs-{{ $.Params.apiName }}", $('ul.menu.sticky').scrollTop());
+      scrollTimer = null;
+    }
+    $('ul.menu.sticky').scroll(function() {
+      if (scrollTimer != null) {
+        window.clearTimeout(scrollTimer);
+      }
+      scrollTimer = window.setTimeout(setScrollPos, 20);
+    });
+    var existing = Cookies.get("scroll-docs-{{ $.Params.apiName }}");
+    if (existing != null) {
+      $('ul.menu.sticky').scrollTop(parseInt(existing));
+    }
+  });
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+<script src="/js/interactive.js"></script>
+<script src="/js/rating.js"></script>
+{{ end }}
+{{ define "content" }}
+  <div class="container-fluid body-content pl-0 pr-0 pb-0">
+    <div id="major-outage-notice" class="container-fluid body-content pl-0 pr-0 mb-0 pb-0 pt-0 mt-0" style="display: none;">
+      <div class="row body-line-major ml-0 mr-0 mb-0 mt-0">
+        <p>
+          <strong>Some services are currently impacted by a major outage incident.</strong><br />
+          Please refer to the <a href="https://status.redpoint.games/" target="_blank">status page</a> for further updates.
+        </p>
+      </div>
+    </div>
+    <div id="partial-outage-notice" class="container-fluid body-content pl-0 pr-0 mb-0 pb-0 pt-0 mt-0" style="display: none;">
+      <div class="row body-line-alert ml-0 mr-0 mb-0 mt-0">
+        <p>
+          <strong>Some services are currently impacted by a partial outage incident.</strong><br />
+          Please refer to the <a href="https://status.redpoint.games/" target="_blank">status page</a> for further updates.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container-fluid body-content docs-content mt-0">
+    <div class="container-fluid container-hive">
+      <div class="row body-line-overflow">
+        <div class="d-block d-md-none col-12 mt-4 pr-0">
+          <button class="float-right btn btn-light" type="button" data-toggle="collapse" data-target="#toc" aria-expanded="false" aria-controls="toc">
+            <i class="fa fa-list-ul"></i>&nbsp;&nbsp;Toggle Table of Contents
+          </button>
+        </div>
+        <div class="collapse show d-md-block col-12 col-md-4 col-lg-3 mt-0 mt-md-4 pl-0 pr-0 pr-md-4 docs-nav" id="toc">
+          <ul class="menu sticky fa-ul">
+            {{ if $.Params.apiName }}
+              {{ $menu := index .Site.Menus $.Params.apiName }}
+              {{ if $menu }}
+                {{ range $menu.ByWeight }}
+                  {{ $.Scratch.Set "Identifier" "=====" }}
+                  {{ template "menu-iter" dict "Target" . "URL" $.URL "Scratch" $.Scratch }}
+                  {{ template "menu-node" dict "Target" . "URL" $.URL "Scratch" $.Scratch "CurrentIdentifier" ($.Scratch.Get "Identifier") }}
+                {{ end }}
+              {{ end }}
+            {{ else }}
+              {{ range .Site.Menus.docs.ByWeight }}
+                {{ $.Scratch.Set "Identifier" "=====" }}
+                {{ template "menu-iter" dict "Target" . "URL" $.URL "Scratch" $.Scratch }}
+                {{ template "menu-node" dict "Target" . "URL" $.URL "Scratch" $.Scratch "CurrentIdentifier" ($.Scratch.Get "Identifier") }}
+              {{ end }}
+            {{ end }}
+          </ul>
+        </div>
+        <div class="col-12 col-md-8 col-lg-9 mt-4">
+          {{ range where .Site.Pages "RelPermalink" .Params.parent }}
+            <a href="{{ .Permalink }}">⇡ {{ .Title }}</a>
+          {{ end }}
+          <div class="d-flex hivemp-doc-title">
+            <div class="mr-auto"><h1>{{- if .Params.pageTitle -}}{{- .Params.pageTitle -}}{{- else -}}{{- .Title -}}{{- end -}}</h1></div>
+            <div>
+              <div id="rating-box">
+                <em class="text-muted" id="rating-title">How did we do?</em><br />
+                <i class="far fa-star" id="star1" data-rating="star" data-rating-value="1"></i> <i class="far fa-star" id="star2" data-rating="star" data-rating-value="2"></i> <i class="far fa-star" id="star3" data-rating="star" data-rating-value="3"></i> <i class="far fa-star" id="star4" data-rating="star" data-rating-value="4"></i> <i class="far fa-star" id="star5" data-rating="star" data-rating-value="5"></i>
+              </div>
+            </div>
+          </div>
+          {{ block "main" . }}
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="rating-info-required" tabindex="-1" role="dialog" aria-labelledby="rating-info-required-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="rating-info-required-label">How can we improve this page?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="rating-info-required-form">
+            <div class="form-group">
+              <label for="rating-info-required-additional-info" class="col-form-label">Type your feedback below:</label>
+              <textarea class="form-control" id="rating-info-required-additional-info"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="rating-info-required-submit" type="button" class="btn btn-primary">Submit feedback</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{{ end }}
+{{ define "main" }}
+  {{ .Content }}
+{{ end }}

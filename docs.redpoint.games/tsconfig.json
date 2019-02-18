@@ -1,0 +1,9 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "sourceMap": true,
+        "inlineSources": true,
+        "module": "commonjs",
+        "target": "es2015"
+    }
+}

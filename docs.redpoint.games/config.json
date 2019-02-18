@@ -1,0 +1,10 @@
+{
+    "baseURL": "/",
+    "languageCode": "en-us",
+    "title": "HiveMP",
+    "blackfriday": {
+        "extensions": [],
+        "extensionsmask": ["autolink", "backslashLineBreak"],
+        "smartypants": false
+    }
+}

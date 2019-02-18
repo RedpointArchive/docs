@@ -1,0 +1,20 @@
+{{- $products := .Site.Data.products -}}
+{{- define "footer-link" -}}
+{{- $product := index .products .name -}}
+<li><a href="{{- ref .page $product.pages.product -}}">{{- $product.title -}}</a></li>
+{{- end -}}
+
+<div class="container-fluid container-hive" style="padding: 0 30px;">
+    <div class="row">
+        <div class="col-12">
+            <a href="https://redpoint.games" class="redpoint" target="_blank">Redpoint Games</a>
+            <ul>
+                <li><a href="https://hivemp.com/" target="_blank">HiveMP</a></li>
+                <li><a href="https://minuteofmayhem.com/" target="_blank">Minute of Mayhem</a></li>
+                <li><a href="https://dimensionjumpgame.com/" target="_blank">Dimension Jump</a></li>
+                <li></li>
+                <li>&copy; {{ (now).Year }}</li>
+            </ul>
+        </div>
+    </div>
+</div>

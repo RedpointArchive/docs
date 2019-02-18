@@ -1,0 +1,205 @@
+{{- $context := .context -}}
+{{- $productId := .productId -}}
+{{- $product := index .context.Site.Data.products $productId -}}
+
+{{- if not $product -}}
+{{- errorf "ERROR: unknown product %s" $productId -}}
+{{- else -}}
+<div class="row body-line-alt">
+  <div class="gamepad-bg">
+    {{ if eq $product.iconGroup "ai" }}
+    <svg class="{{ $product.iconGroup }} {{ $product.icon }}"><use xlink:href="/svg/svg-{{ $product.iconGroup }}.svg#{{ $product.icon }}"></use></svg>
+    {{ else }}
+    <i class="{{ $product.iconGroup }} {{ $product.icon }}"></i>
+    {{ end }}
+  </div>      
+  <div class="container-fluid container-hive pull-front">
+    <div class="row">
+      <div class="jumbotron mb-0">
+        <h1>{{ $product.title }}</h1>
+        <p class="lead">
+          {{ $product.description.tagline }}
+        </p>
+        {{ if $product.pages.docs }}
+          <a class="btn btn-lg btn-primary" href="{{ ref $context $product.pages.docs }}" role="button">View Documentation</a>
+        {{ end }}
+        {{ if $product.pages.console }}
+          <a class="btn btn-lg btn-dark" target="_blank" href="{{ $product.pages.console }}" role="button">Go to Console</a>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+</div>
+{{ if ne $product.stage "GA" }}
+<div class="row body-line-alert ml-0 mr-0">
+  <p>
+    <strong>{{ $product.title }} is currently in <a href="{{ ref $context "/terms/launch-stages.md" }}">{{ $product.stage }}</a>.</strong><br />
+    Please report issues and submit feature requests via our <a href="{{ ref $context "/support.md" }}">support channels</a>.
+  </p>
+</div>
+{{ end }}
+{{ range $idx, $feature := $product.headlineFeatures }}
+{{ if eq (mod $idx 2) 0 }}
+<div class="row body-line">
+  <div class="container-fluid container-hive">
+    <div class="row">
+      <div class="col-8 pl-0">
+        <div class="jumbotron mb-0">
+          <h1>
+            {{ $feature.title }}
+          </h1>
+          <p class="lead">
+            {{ (replace $feature.markdown "%BRAND%" $product.title) | markdownify }}
+          </p>
+        </div>
+      </div>
+      <div class="col-4 pr-0">
+        <div class="icon-secondary">
+          <div class="feature-icon">
+            {{ if eq $feature.iconGroup "ai" }}
+            <svg class="{{ $feature.iconGroup }} {{ $feature.icon }}"><use xlink:href="/svg/svg-{{ $feature.iconGroup }}.svg#{{ $feature.icon }}"></use></svg>
+            {{ else }}
+            <i class="{{ $feature.iconGroup }} {{ $feature.icon }}"></i>
+            {{ end }}
+          </div>
+        </div>
+        <div class="icon-primary">
+          <div class="feature-icon">
+            {{ if eq $feature.iconGroup "ai" }}
+            <svg class="{{ $feature.iconGroup }} {{ $feature.icon }}"><use xlink:href="/svg/svg-{{ $feature.iconGroup }}.svg#{{ $feature.icon }}"></use></svg>
+            {{ else }}
+            <i class="{{ $feature.iconGroup }} {{ $feature.icon }}"></i>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{ else }}
+<div class="row body-line">
+  <div class="container-fluid container-hive">
+    <div class="row">
+      <div class="col-4 icon-alt pl-0">
+        <div class="icon-secondary">
+          <div class="feature-icon">
+            {{ if eq $feature.iconGroup "ai" }}
+            <svg class="{{ $feature.iconGroup }} {{ $feature.icon }}"><use xlink:href="/svg/svg-{{ $feature.iconGroup }}.svg#{{ $feature.icon }}"></use></svg>
+            {{ else }}
+            <i class="{{ $feature.iconGroup }} {{ $feature.icon }}" data-fa-transform="flip-h"></i>
+            {{ end }}
+          </div>
+        </div>
+        <div class="icon-primary">
+          <div class="feature-icon">
+            {{ if eq $feature.iconGroup "ai" }}
+            <svg class="{{ $feature.iconGroup }} {{ $feature.icon }}"><use xlink:href="/svg/svg-{{ $feature.iconGroup }}.svg#{{ $feature.icon }}"></use></svg>
+            {{ else }}
+            <i class="{{ $feature.iconGroup }} {{ $feature.icon }}" data-fa-transform="flip-h"></i>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+      <div class="col-8 pr-0">
+        <div class="jumbotron mb-0">
+          <h1>
+            {{ $feature.title }}
+          </h1>
+          <p class="lead">
+            {{ (replace $feature.markdown "%BRAND%" $product.title) | markdownify }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{ end }}
+{{ end }}
+<div class="row body-line-alt">
+  <div class="container-fluid container-hive">
+    <div class="row row-features">
+      <div class="col-12 pb-4 pt-4">
+        <h3>{{ $product.title }} Features</h3>
+        <p>{{ $product.description.featureline }}</p>
+      </div>
+      {{ range $idx, $feature := $product.features }}
+      <div class="col-12 col-md-6">
+        <h5>{{ $feature.title }}</h5>
+        <p style="font-size: 90%">
+          {{ (replace $feature.markdown "%BRAND%" $product.title) | markdownify }}
+        </p>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</div>
+<div class="row body-line">
+  <div class="container-fluid container-hive">
+    <div class="row row-pricing">
+      <div class="col-12 pb-4 pt-4">
+        <h3>{{ $product.title }} Pricing</h3>
+        <p>{{ $product.description.pricingline }}</p>
+      </div>
+      {{ if $product.pricingTag }}
+      <div class="col-12">
+        {{ partial "pricing-sku" (dict "context" $context "soft" false "tag" $product.pricingTag) }}
+      </div>
+      <div class="col-12 pb-4 pt-4 text-muted" style="font-size: 80%;">
+        <p class="pl-2 pr-2">
+          <strong>Notice:</strong> A session is either metered or unmetered when it is created, as specified in the authentication request. Metered sessions are billed per session-minute, but offer reduced or no-cost rates for other related HiveMP services. Unmetered sessions are billed per request, but do not come with reduced rates for other HiveMP services. Not all services are eligible for reduced metering rates; refer to the pricing table above.
+        </p>
+      </div>
+      {{ else }}
+      <div class="col-12 pb-4">
+        Public pricing is not yet available for {{ $product.title }} while it's in {{ $product.stage }}. If you're interested in using {{ $product.title }}, please contact <a href="{{ ref $context "/support.md" }}">our sales team</a>.
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</div>
+<div class="row body-line-alt">
+  <div class="container-fluid container-hive">
+    <div class="row row-bottom-buttons">
+      <div class="col-12 pt-3">
+        {{ if $product.pages.docs }}
+          <a class="btn btn-lg btn-primary mr-1 ml-1 mt-2 mt-sm-0" href="{{ ref $context $product.pages.docs }}" role="button">View Documentation</a>
+        {{ end }}
+        {{ if $product.pages.console }}
+          <a class="btn btn-lg btn-dark mr-1 ml-1 mt-2 mt-sm-0" target="_blank" href="{{ $product.pages.console }}" role="button">Go to Console</a>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid container-hive">
+    <div class="row row-overview-buttons-links">
+      {{ range $key, $link := $product.furtherLinks }}
+      {{ $page := $context.Site.GetPage $link.ref }}
+      {{ $psc := newScratch }}
+      {{ with $page }}
+      {{ if $link.title }}
+      {{ $psc.Set "title" $link.title }}
+      {{ else }}
+      {{ $psc.Set "title" .Title }}
+      {{ end }}
+      {{ $pageTitle := replace ($psc.Get "title") "%BRAND%" $product.title }}
+      <div class="col-12 col-md-4 mx-auto">
+        <a class="card-link" href="{{ ref $context $link.ref }}">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"><div>
+                {{- if eq $link.iconGroup "ai" -}}
+                <svg class="{{ $link.iconGroup }} {{ $link.icon }}"><use xlink:href="/svg/svg-{{ $link.iconGroup }}.svg#{{ $link.icon }}"></use></svg>
+                {{- else -}}
+                <i class="{{ $link.iconGroup }} {{ $link.icon }}"></i>
+                {{- end -}}</div>{{ $pageTitle }}</h5>
+              <p class="card-text">{{ replace $link.description "%BRAND%" $product.title }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+      {{ end }}
+      {{ end }}
+    </div>
+  </div>
+</div>
+{{- end -}}

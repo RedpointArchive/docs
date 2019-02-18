@@ -1,0 +1,9 @@
+<h2>Methods</h2>
+<p>
+    This path supports the following methods:
+</p>
+<ul>
+{{ range $key, $value := .Page.Params.json }}
+    <li><strong><a href="{{ $key }}">{{ $key }}</a></strong>: {{ $value.summary }}</li>
+{{ end }}
+</ul>

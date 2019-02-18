@@ -1,0 +1,335 @@
+{
+    "left_held": {
+        "keyboard_check": [
+            "vk_left"
+        ],
+        "gamepad_analog": [
+            {
+                "axis": "left_horizontal",
+                "type": "less_than",
+                "value": -0.8
+            }
+        ],
+        "gamepad_button_check": [
+            "gp_padl"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_left",
+        "gamepad_hint": "spr_tutorial_gamepad_left_analog"
+    },
+    "right_held": {
+        "keyboard_check": [
+            "vk_right"
+        ],
+        "gamepad_analog": [
+            {
+                "axis": "left_horizontal",
+                "type": "greater_than",
+                "value": 0.8
+            }
+        ],
+        "gamepad_button_check": [
+            "gp_padr"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_right",
+        "gamepad_hint": "spr_tutorial_gamepad_left_analog"
+    },
+    "up_held": {
+        "keyboard_check": [
+            "vk_up"
+        ],
+        "gamepad_analog": [
+            {
+                "axis": "left_vertical",
+                "type": "less_than",
+                "value": -0.8
+            }
+        ],
+        "gamepad_button_check": [
+            "gp_padu"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_up",
+        "gamepad_hint": "spr_tutorial_gamepad_left_analog"
+    },
+    "down_held": {
+        "keyboard_check": [
+            "vk_down"
+        ],
+        "gamepad_analog": [
+            {
+                "axis": "left_vertical",
+                "type": "greater_than",
+                "value": 0.8
+            }
+        ],
+        "gamepad_button_check": [
+            "gp_padd"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_down",
+        "gamepad_hint": "spr_tutorial_gamepad_left_analog"
+    },
+    "jump_held": {
+        "keyboard_check": [
+            "vk_up"
+        ],
+        "gamepad_button_check": [
+            "gp_face1"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_up",
+        "gamepad_hint": "spr_tutorial_gamepad_a"
+    },
+    "jump_press_not_held": {
+        "keyboard_check_pressed": [
+            "vk_up"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_face1"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_up",
+        "gamepad_hint": "spr_tutorial_gamepad_a"
+    },
+    "jump_release": {
+        "keyboard_check_released": [
+            "vk_up"
+        ],
+        "gamepad_button_check_released": [
+            "gp_face1"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_up",
+        "gamepad_hint": "spr_tutorial_gamepad_a"
+    },
+    "dimension_jump_press_not_held": {
+        "keyboard_check_pressed": [
+            "vk_space",
+            "Z"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_shoulderl",
+            "gp_shoulderlb",
+            "gp_shoulderr",
+            "gp_shoulderrb"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_z",
+        "gamepad_hint": "spr_tutorial_gamepad_left_trigger"
+    },
+    "teleport_held": {
+        "keyboard_check": [
+            "vk_control"
+        ],
+        "gamepad_button_check": [
+            "gp_face3"
+        ]
+    },
+    "teleport_press_not_held": {
+        "keyboard_check_pressed": [
+            "vk_control"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_face3"
+        ]
+    },
+    "teleport_release": {
+        "keyboard_check_released": [
+            "vk_control"
+        ],
+        "gamepad_button_check_released": [
+            "gp_face3"
+        ]
+    },
+    "back_press_not_held": {
+        "keyboard_check_pressed": [
+            "vk_escape"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_select"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_esc",
+        "gamepad_hint": "spr_tutorial_gamepad_back"
+    },
+    "restart_press_not_held": {
+        "keyboard_check_pressed": [
+            "R"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_start"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_r",
+        "gamepad_hint": "spr_tutorial_gamepad_start"
+    },
+    "back_at_menu_press_not_held": {
+        "keyboard_check_pressed": [
+            "vk_escape"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_select",
+            "gp_face2"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_esc",
+        "gamepad_hint": "spr_tutorial_gamepad_back"
+    },
+    "back_at_main_menu_press_not_held": {
+        "keyboard_check_pressed": [
+            "vk_escape",
+            "vk_up"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_select",
+            "gp_face2"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_esc",
+        "gamepad_hint": "spr_tutorial_gamepad_back"
+    },
+    "start_press_not_held": {
+        "keyboard_check_pressed": [
+            "vk_space",
+            "vk_enter",
+            "Z"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_start",
+            "gp_face1"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_z",
+        "gamepad_hint": "spr_tutorial_gamepad_a"
+    },
+    "start_at_main_menu_press_not_held": {
+        "keyboard_check_pressed": [
+            "vk_space",
+            "vk_enter",
+            "vk_down",
+            "Z"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_start",
+            "gp_face1"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_z",
+        "gamepad_hint": "spr_tutorial_gamepad_a"
+    },
+    "save_screenshot_press_not_held": {
+        "keyboard_check_pressed": [
+            "K"
+        ]
+    },
+    "editor_open_selector_held": {
+        "keyboard_check": [
+            "vk_control"
+        ],
+        "gamepad_button_check": [
+            "gp_shoulderl",
+            "gp_shoulderlb"
+        ]
+    },
+    "editor_swap_dimensions": {
+        "keyboard_check_pressed": [
+            "S"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_shoulderr",
+            "gp_shoulderrb"
+        ]
+    },
+    "editor_primary_held": {
+        "keyboard_check": [
+            "Z"
+        ],
+        "gamepad_button_check": [
+            "gp_face1"
+        ]
+    },
+    "editor_primary_press_not_held": {
+        "keyboard_check_pressed": [
+            "Z"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_face1"
+        ]
+    },
+    "editor_secondary_held": {
+        "keyboard_check": [
+            "X"
+        ],
+        "gamepad_button_check": [
+            "gp_face2"
+        ]
+    },
+    "editor_secondary_press_not_held": {
+        "keyboard_check_pressed": [
+            "X"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_face2"
+        ]
+    },
+    "editor_toggle_play_mode": {
+        "keyboard_check_pressed": [
+            "A"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_face4"
+        ]
+    },
+    "press_unlock": {
+        "keyboard_check_pressed": [
+            "U"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_face4"
+        ]
+    },
+    "user_levels_switch_query": {
+        "keyboard_check_pressed": [
+            "X"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_face4"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_x",
+        "gamepad_hint": "spr_tutorial_gamepad_y"
+    },
+    "level_select_leaderboard_swap": {
+        "keyboard_check_pressed": [
+            "vk_control"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_face3"
+        ],
+        "keyboard_hint": "spr_tutorial_keyboard_ctrl",
+        "gamepad_hint": "spr_tutorial_gamepad_x"
+    },
+    "main_menu_quick_escape": {
+        "keyboard_check_pressed": [
+            "vk_escape"
+        ]
+    },
+    "editor_restart_press_not_held": {
+        "keyboard_check_pressed": [
+            "R"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_select"
+        ]
+    },
+    "editor_exit_play_mode": {
+        "keyboard_check_pressed": [
+            "vk_escape"
+        ]
+    },
+    "menu_navigation": {
+        "keyboard_hint": "spr_tutorial_keyboard_arrows",
+        "gamepad_hint": "spr_tutorial_gamepad_left_analog"
+    },
+    "main_menu_back": {
+        "keyboard_hint": "spr_tutorial_keyboard_up",
+        "gamepad_hint": "spr_tutorial_gamepad_back"
+    },
+    "replay_level": {
+        "keyboard_hint": "spr_tutorial_keyboard_r",
+        "gamepad_hint": "spr_tutorial_gamepad_start",
+        "keyboard_check_pressed": [
+            "R"
+        ],
+        "gamepad_button_check_pressed": [
+            "gp_start"
+        ]
+    }
+}
