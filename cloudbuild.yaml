@@ -1,4 +1,8 @@
 steps:
+- name: "klakegg/hugo:0.53-busybox"
+  args: ['-c', "cp $(which hugo) /workspace/hugo"]
+  entrypoint: "bash"
+  env: []
 - name: "node:8.15.0-jessie"
   args: ['/workspace/build.sh']
   entrypoint: "bash"

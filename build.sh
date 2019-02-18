@@ -5,6 +5,10 @@ set -x
 
 echo "## Building Hugo website for docs.redpoint.games ..."
 
+if [ -f ./hugo ]; then
+  PATH=$(pwd):$PATH
+fi
+
 if [ -d dist-docs ]; then
   rm -Rf dist-docs
 fi
