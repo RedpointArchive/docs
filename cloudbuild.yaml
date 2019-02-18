@@ -1,5 +1,5 @@
 steps:
-- name: "klakegg/hugo:0.53-busybox"
+- name: "klakegg/hugo:0.53-debian"
   args: ['-c', "cp $(which hugo) /workspace/hugo"]
   entrypoint: "bash"
   env: []
