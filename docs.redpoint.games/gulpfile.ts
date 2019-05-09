@@ -217,7 +217,10 @@ gulp.task('generate-page-screenshots', async () => {
                 path: thumbnailPath + `/twitter_${md5Hash}.png`
               });
             } finally {
-              twitterPage.close();
+              try {
+                await twitterPage.close();
+              } catch (err) {
+              }
             }
           });
         }
@@ -235,7 +238,10 @@ gulp.task('generate-page-screenshots', async () => {
                 path: thumbnailPath + `/fb_${md5Hash}.png`
               });
             } finally {
-              facebookPage.close();
+              try {
+                await facebookPage.close();
+              } catch (err) {
+              }
             }
           });
         }
@@ -243,11 +249,11 @@ gulp.task('generate-page-screenshots', async () => {
 
       await parallel(tasks, Math.max(os.cpus().length, 2) - 1);
     } finally {
-      browser.close();
+      await browser.close();
       console.log('shutdown puppeteer browser.');
     }
   } finally {
-    server.close();
+    await server.close();
     console.log('shutdown express app.');
   }
 });

@@ -12,4 +12,7 @@ fi
 if [ -e "/c/Users/jrhod/AppData/Local/Google/Cloud SDK/google-cloud-sdk/bin/gsutil.cmd" ]; then
   GSUTIL="/c/Users/jrhod/AppData/Local/Google/Cloud SDK/google-cloud-sdk/bin/gsutil.cmd"
 fi
+if [ -e "/c/Program Files (x86)/Google/Cloud SDK/google-cloud-sdk/bin/gsutil.cmd" ]; then
+  GSUTIL="/c/Program Files (x86)/Google/Cloud SDK/google-cloud-sdk/bin/gsutil.cmd"
+fi
 "$GSUTIL" -m rsync -d -r -c dist-docs gs://support.redpoint.games

@@ -31,14 +31,14 @@ menu:
     Enter the details of your issue below, and your contact details, and we'll get back to you shortly.
 </p>
 <div id='zohoSupportWebToCase'>
-    <form name='zsWebToCase_162852000000839001' id='zsWebToCase_162852000000839001' action='https://support.redpoint.games/support/WebToCase' method='POST' onSubmit='return zsValidateMandatoryFields()' enctype='multipart/form-data'>
+    <form name='zsWebToCase_162852000000839001' id='zsWebToCase_162852000000839001' action='https://desk.zoho.com/support/WebToCase' method='POST' onSubmit='return zsValidateMandatoryFields()' enctype='multipart/form-data'>
         <input type='hidden' name='xnQsjsdp' value='t-gDGuJo7Dbbsy-V*kINXg$$'/>
         <input type='hidden' name='xmIwtLD' value='gZcJBW2ggW7v-Hh5nkwSTm-*B6-MHnNR'/>
         <input type='hidden' name='xJdfEaS' value=''/>
         <input type='hidden' name='actionType' value='Q2FzZXM='/>
         <input type="hidden" id="property(module)" value="Cases"/>
         <input type="hidden" id="dependent_field_values_Cases" value="&#x7b;&quot;JSON_VALUES&quot;&#x3a;&#x7b;&#x7d;,&quot;JSON_SELECT_VALUES&quot;&#x3a;&#x7b;&#x7d;,&quot;JSON_MAP_DEP_LABELS&quot;&#x3a;&#x5b;&#x5d;&#x7d;"/>
-        <input type='hidden' name='returnURL' value='https://support.redpoint.games/return'/>
+        <input type='hidden' name='returnURL' value='https://support.redpoint.games/contact-us/'/>
         <div class="form-group">
             <label>First Name</label>
             <input type="text" class="form-control" name="First Name" />
