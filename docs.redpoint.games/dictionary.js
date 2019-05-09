@@ -17,6 +17,7 @@ let dictionary = [
     'Integrations',
     'macOS',
     'CMake',
+    'GitLab',
     'GCR',
     'AWS',
     'aws',
