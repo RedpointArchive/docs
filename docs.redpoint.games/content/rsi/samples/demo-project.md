@@ -17,3 +17,7 @@ The {{< brand "rsi" >}} demo project shows you how to use RSI with procedural ge
 You can download the {{< brand "rsi" >}} demo project from GitHub:
 
 <a href="https://github.com/RedpointGames/RSIDemo" target="_blank" class="btn btn-danger">View demo project on GitHub</a>
+
+You can also download a pre-built version of the demo for Windows:
+
+<a href="https://storage.googleapis.com/replicated-sublevel-instances-demo/RSIDemo-Win64.zip" target="_blank" class="btn btn-danger">Download demo for Windows (64-bit)</a>
