@@ -83,6 +83,7 @@ let dictionary = [
     'ExternalIP',
     /([0-9]+)MB/,
     'WebAPI',
+    'pre-built',
     
     // Code and URL references.
     'v1',
